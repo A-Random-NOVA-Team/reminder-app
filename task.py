@@ -7,7 +7,6 @@ class Base(DeclarativeBase):
     pass
 
 
-# --- 2. Define the Task Model ---
 class Task(Base):
     __tablename__ = "tasks"  # The name of the table in the database
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -21,7 +20,6 @@ class Task(Base):
 
     def mark_complete(self):
         self.is_completed = True
-        print(f"Task '{self.name}' marked as complete.")
 
     def mark_incomplete(self):
         self.is_completed = False
@@ -38,6 +36,10 @@ class Task(Base):
         return (
             f"Task(id={self.id!r}, name={self.name!r}, completed={self.is_completed!r})"
         )
+
+
+
+
 
 
 if __name__ == "__main__":
