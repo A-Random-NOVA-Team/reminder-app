@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
-from api.api_router import api_router, auth_router
+from api.api_router import api_router
 from core.config import get_settings
 
 app = FastAPI(
@@ -13,7 +13,6 @@ app = FastAPI(
     docs_url="/",
 )
 
-app.include_router(auth_router)
 app.include_router(api_router)
 
 # Sets all CORS enabled origins
