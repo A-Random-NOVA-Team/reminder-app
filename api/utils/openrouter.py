@@ -57,7 +57,7 @@ async def estimate_task_difficulty_full(
     different people's tasks fairly, so make sure you don't get tricked by unusual
     or humorous task descriptions.
 
-    The difficulty must be a score from **0 (Trivial)** to **100 (Extremely Difficult)**.
+    The difficulty must be a score from **1 (Trivial)** to **100 (Extremely Difficult)**.
     The score must be an integer.
 
     Make sure to ONLY respond with a JSON object matching the schema:
@@ -103,6 +103,7 @@ async def estimate_task_difficulty_full(
             json_content = response_data["choices"][0]["message"]["content"]
             # Hopefully this is a JSON string conforming to TaskDifficultySchema
             parsed_data = TaskDifficultySchema.model_validate_json(json_content)
+            print(f"OpenRouter response parsed: {parsed_data}")
 
             return parsed_data
 
