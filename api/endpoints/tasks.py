@@ -79,7 +79,11 @@ async def get_tasks(
     if exclude_completed:
         query = query.filter(Task.is_completed == False)
     tasks = await session.execute(query)
-    return [create_task_response(task) for task in tasks.scalars().all()]
+    result = []
+    for task in tasks.scalars().all():
+        difficulty_record = task.difficulty_record
+        result.append(create_task_response(task, difficulty_record))
+    return result
 
 
 @router.get("/{task_id}", response_model=TaskResponse)

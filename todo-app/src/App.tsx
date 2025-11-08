@@ -4,15 +4,38 @@ import Reminder from './Reminder';
 import { CreateTaskRequest, Task } from './api/types';
 import { getTasks, createTask, updateTask, deleteTask } from './api/tasks';
 
+
+type TaskNormalized = {
+    id: string;
+    name: string;
+    description: string;
+    due_date: string | null;
+    is_completed: boolean;
+
+    diffulty_score: number;
+};
+
 function App() {
 
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskNormalized[]>([]);
   const [completedScores, setCompletedScores] = useState(0);
 
   const fetchTasks = async () => {
     try {
       const tasks = await getTasks();
-      setTasks(tasks);
+      let normalizedTasks: TaskNormalized[] = [];
+      for (let task of tasks) {
+        console.log(task);
+        normalizedTasks.push({
+          id: task.id,
+          name: task.name,
+          description: task.description || "",
+          due_date: task.due_date,
+          is_completed: task.is_completed,
+          diffulty_score: task.diffulty_score || 50,
+        });
+      }
+      setTasks(normalizedTasks);
     } catch (error) {
       console.error('Failed to fetch tasks:', error);
     }
@@ -23,8 +46,8 @@ function App() {
   }, []);
 
   const handleCompleteReminder = (index: number) => {
-    const taskScore = tasks[index].diffulty_score || 50;
-    updateTask(tasks[index].id, { is_completed: true, difficulty_reestimate: false }).then(() => {
+    const taskScore = tasks[index].diffulty_score;
+    updateTask(tasks[index].id, { is_completed: true, diffulty_reestimate: false }).then(() => {
       setCompletedScores(prev => prev + taskScore);
       fetchTasks();
     }).catch(error => {
@@ -40,7 +63,7 @@ function App() {
         <Reminder
           key={tasks[i].id}
           text={tasks[i].name}
-          difficultyScore={tasks[i].diffulty_score || 50}
+          difficultyScore={tasks[i].diffulty_score}
           index={i}
           completeTaskCallback={handleCompleteReminder}
         />
