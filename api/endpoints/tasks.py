@@ -7,7 +7,7 @@ from schemas.requests import CreateTaskRequest
 from schemas.responses import TaskResponse
 from task import Task
 
-router = APIRouter(prefix="/tasks", tags=["tasks"])
+router = APIRouter()
 
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
