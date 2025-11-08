@@ -13,7 +13,9 @@ router = APIRouter()
 
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
-async def create_task(task: CreateTaskRequest, session: AsyncSession = Depends(deps.get_session)):
+async def create_task(
+    task: CreateTaskRequest, session: AsyncSession = Depends(deps.get_session)
+):
     """Create a new task"""
     db_task = Task(
         name=task.name,
@@ -29,7 +31,9 @@ async def create_task(task: CreateTaskRequest, session: AsyncSession = Depends(d
 
 
 @router.get("/", response_model=List[TaskResponse])
-async def get_tasks(skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)):
+async def get_tasks(
+    skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)
+):
     """Get all tasks"""
     tasks = await session.execute(select(Task).offset(skip).limit(limit))
     return tasks.scalars().all()
@@ -46,7 +50,9 @@ async def get_task(task_id: int, session: AsyncSession = Depends(deps.get_sessio
 
 @router.put("/{task_id}", response_model=TaskResponse)
 async def update_task(
-    task_id: int, task: UpdateTaskRequest, session: AsyncSession = Depends(deps.get_session)
+    task_id: int,
+    task: UpdateTaskRequest,
+    session: AsyncSession = Depends(deps.get_session),
 ):
     """Update a task"""
     db_task = await session.get(Task, task_id)

@@ -1,10 +1,7 @@
 from datetime import datetime
-from sqlalchemy import create_engine, String, DateTime, Boolean, select, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy import create_engine, String, DateTime, Boolean, func
+from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
+from .base import Base
 
 
 # --- 2. Define the Task Model ---
