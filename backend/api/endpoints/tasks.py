@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from api import deps
-from backend.models import User
 from schemas.requests import CreateTaskRequest
 from schemas.responses import TaskResponse
+from ....task import Task
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -53,9 +53,11 @@ def update_task(
         raise HTTPException(status_code=404, detail="Task not found")
 
     db_task.name = task.name
-    db_task.description = task.description
-    db_task.due_date = task.due_date
-    db_task.updated_at = datetime.datetime.now(datetime.timezone.utc)
+    # db_task.description = task.description
+    db_task.due_date = (
+        datetime.datetime.fromisoformat(task.due_date) if task.due_date else None
+    )
+    db_task.update_time = datetime.datetime.now(datetime.timezone.utc)
 
     db.add(db_task)
     db.commit()
