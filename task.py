@@ -1,13 +1,21 @@
 from datetime import datetime
+from sqlalchemy import create_engine, String, DateTime, Boolean, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-class Task:
-    def __init__(self, name: str, due_date: datetime):
-        self.name: str = name
-        self.due_date: datetime = due_date
-        self.is_completed: bool = False  # New tasks default to incomplete
+class Base(DeclarativeBase):
+    pass
+
+# --- 2. Define the Task Model ---
+class Task(Base):
+    __tablename__ = 'tasks'  # The name of the table in the database
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255)) 
+    due_date: Mapped[datetime] = mapped_column(DateTime)
+    is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
 
     def mark_complete(self):
         self.is_completed = True
+        print(f"Task '{self.name}' marked as complete.")
 
     def mark_incomplete(self):
         self.is_completed = False
@@ -15,20 +23,34 @@ class Task:
     def is_overdue(self):
         return self.due_date < datetime.now() and not self.is_completed
 
-    # a user-friendly string representation when print is called
-    def __str__(self) -> str:  
+    def __str__(self) -> str:
         status_icon = "[X]" if self.is_completed else "[ ]"
         date_str = self.due_date.strftime("%b %d, %Y at %I:%M %p")
         return f"{status_icon} {self.name} (Due: {date_str})"
 
-    # a developer friendly string representation
-    def __repr__(self) -> str: 
-        return f"Task(name='{self.name}', due_date={repr(self.due_date)}, completed={self.is_completed})"
-    
+    def __repr__(self) -> str:
+        return f"Task(id={self.id!r}, name={self.name!r}, completed={self.is_completed!r})"
 
 if __name__ == "__main__":
-    # run python3 task.py to see the output of the test cases
-    t = Task("test",datetime(2025,11,8,12,15,36))
-    print(t)
+    engine = create_engine("sqlite:///tasks.db")
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    t = Task(name="Finish hackathon project", 
+             due_date=datetime(2025, 11, 9, 12, 0))
+    session.add(t)
+    session.commit()
+    
+    print("--- Created and saved task ---")
+    print(t)  # Uses __str__
+    print(repr(t)) # Uses __repr__ - notice it now has an id!
     t.mark_complete()
+    session.commit()
+    print("\n--- Task marked complete ---")
     print(t)
+    queried_task = session.get(Task, 1) # .get() is the fastest way to get by
+    print("\n--- Queried task from DB ---")
+    print(queried_task)
+    print(f"Is it overdue? {queried_task.is_overdue()}")
+
+    session.close()
