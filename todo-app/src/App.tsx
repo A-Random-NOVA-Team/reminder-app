@@ -7,10 +7,15 @@ function App() {
   const [numReminders, setNumReminders] = useState(0);
   const [reminderText, setreminderText] = useState(["test"]);
 
+  const handleDeleteReminder = (index: number) => {
+    setreminderText(prevArray => prevArray.filter((_, i) => i !== index));
+    setNumReminders(prevCount => prevCount - 1);
+  };
+
   const renderReminders = () => {
     const reminders = [];
     for (let i = 0; i < numReminders; i++) {
-      reminders.push(<Reminder text={reminderText[i + 1]} key={i}/>);
+      reminders.push(<Reminder text={reminderText[i + 1]} key={i} index={i + 1} del={handleDeleteReminder}/>);
     }
 
     return reminders;
