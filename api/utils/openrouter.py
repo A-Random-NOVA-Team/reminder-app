@@ -1,6 +1,7 @@
 import os
 from pydantic import BaseModel, Field
 import httpx
+import asyncio
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 if not OPENROUTER_API_KEY:
@@ -103,3 +104,18 @@ async def estimate_task_difficulty_full(task_name: str, task_description: str) -
             difficulty_score=DEFAULT_SCORE,
             reasoning=f"Internal error during LLM call: {e.__class__.__name__}."
         )
+
+
+
+
+
+# a testing function to keep entering name and description and returns difficulty
+
+if __name__ == '__main__':
+    while True:
+        my_name = input('enter name (0 to quit): ')
+        if(my_name == '0'):
+            break
+        my_desc = input('enter description: ')
+        result = asyncio.run(estimate_task_difficulty_full(my_name, my_desc))
+        print(result)
