@@ -24,5 +24,8 @@ class TaskResponse(BaseResponse):
     description: str | None
     due_date: str | None
     is_completed: bool
+    diffulty_score: int | None = None
+    reasoning: str | None = None
+    diffulty_estimation_time: str | None = None
     create_time: str
     update_time: str

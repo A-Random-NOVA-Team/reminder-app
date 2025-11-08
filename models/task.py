@@ -1,6 +1,8 @@
 from datetime import datetime
-from sqlalchemy import create_engine, String, DateTime, Boolean, func
-from sqlalchemy.orm import Mapped, mapped_column, sessionmaker, relationship
+
+from sqlalchemy import Boolean, DateTime, String, create_engine, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
+
 from .base import Base
 
 
@@ -22,8 +24,8 @@ class Task(Base):
     difficulty_record = relationship(
         "TaskDifficulty",
         back_populates="task",
-        uselist=False, # Important for one-to-one
-        cascade="all, delete-orphan" # Optional: Deletes difficulty when task is deleted
+        uselist=False,  # Important for one-to-one
+        cascade="all, delete-orphan",  # Optional: Deletes difficulty when task is deleted
     )
 
     def mark_complete(self):

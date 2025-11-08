@@ -38,6 +38,7 @@ class UpdateTaskRequest(BaseRequest):
     task_id: str
     name: str | None = None
     description: str | None = None
+    difficulty_reestimate: bool | None = None
     due_date: str | None = None
     is_completed: bool | None = None
 
