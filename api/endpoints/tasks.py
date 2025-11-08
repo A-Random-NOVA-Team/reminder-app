@@ -65,7 +65,7 @@ async def get_task(task_id: int, session: AsyncSession = Depends(deps.get_sessio
     task = await session.execute(select(Task).filter(Task.id == task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return create_task_response(task)
+    return create_task_response(task.scalar_one())
 
 
 @router.put("/{task_id}", response_model=TaskResponse)
