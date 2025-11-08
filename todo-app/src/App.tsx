@@ -4,12 +4,13 @@ import Reminder from './Reminder';
 
 function App() {
 
-  const [numReminders, setNumReminders] = useState(3);
+  const [numReminders, setNumReminders] = useState(0);
+  const [reminderText, setreminderText] = useState(["test"]);
 
   const renderReminders = () => {
     const reminders = [];
     for (let i = 0; i < numReminders; i++) {
-      reminders.push(<Reminder key={i}/>);
+      reminders.push(<Reminder text={reminderText[i + 1]} key={i}/>);
     }
 
     return reminders;
@@ -25,13 +26,15 @@ function App() {
 
        <input onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          console.log((e.target as HTMLInputElement).value);
+                          setreminderText(prevArray => [...prevArray, (e.target as HTMLInputElement).value]);
+                          console.log(reminderText);
                           setNumReminders(prevCount => prevCount + 1);
                         }}
                       } />
       </label>
 
-      {renderReminders()}
+      { renderReminders() }
+
     </div>
     </div>
 
