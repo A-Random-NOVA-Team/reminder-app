@@ -8,3 +8,4 @@ pydantic
 bcrypt
 aiosqlite
 httpx
+uvicorn
