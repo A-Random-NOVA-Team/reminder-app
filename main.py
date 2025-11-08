@@ -12,8 +12,7 @@ app = FastAPI(
     openapi_url="/openapi.json",
     docs_url="/",
 )
-
-app.include_router(api_router)
+print(get_settings().security.backend_cors_origins)
 
 # Sets all CORS enabled origins
 app.add_middleware(
@@ -32,3 +31,6 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=get_settings().security.allowed_hosts,
 )
+
+
+app.include_router(api_router)
