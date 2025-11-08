@@ -19,6 +19,7 @@ from datetime import datetime
 from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, String, Uuid, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from task import Task
 
 class Base(DeclarativeBase):
     create_time: Mapped[datetime] = mapped_column(

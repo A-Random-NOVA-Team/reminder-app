@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api import deps
 from schemas.requests import CreateTaskRequest, UpdateTaskRequest
 from schemas.responses import TaskResponse
-from task import Task
+from models import Task
 
 router = APIRouter()
 
