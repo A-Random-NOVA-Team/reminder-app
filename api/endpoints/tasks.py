@@ -21,6 +21,7 @@ def parse_date_or_error(date_str: str) -> datetime.datetime:
             detail=f"Invalid date format: {date_str}. Expected ISO format.",
         )
 
+
 def create_task_response(task: Task) -> TaskResponse:
     return TaskResponse(
         id=str(task.id),
@@ -31,6 +32,7 @@ def create_task_response(task: Task) -> TaskResponse:
         create_time=task.create_time.isoformat(),
         update_time=task.update_time.isoformat(),
     )
+
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(

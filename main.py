@@ -6,9 +6,9 @@ from api.api_router import api_router, auth_router
 from core.config import get_settings
 
 app = FastAPI(
-    title="minimal fastapi postgres template",
-    version="6.1.0",
-    description="https://github.com/rafsaf/minimal-fastapi-postgres-template",
+    title="TODO App",
+    version="0.1.0",
+    description="https://github.com/A-Random-NOVA-Team/reminder-app",
     openapi_url="/openapi.json",
     docs_url="/",
 )

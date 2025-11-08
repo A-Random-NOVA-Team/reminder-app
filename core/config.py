@@ -16,6 +16,7 @@
 
 import logging.config
 from functools import lru_cache
+import os
 from pathlib import Path
 
 from pydantic import AnyHttpUrl, BaseModel, Field, SecretStr, computed_field
@@ -35,19 +36,12 @@ class Security(BaseModel):
     backend_cors_origins: list[AnyHttpUrl] = []
 
 
-class Database(BaseModel):
-    hostname: str = "postgres"
-    username: str = "postgres"
-    password: SecretStr = SecretStr("passwd-change-me")
-    port: int = 5432
-    db: str = "postgres"
-
-
 class Settings(BaseSettings):
     security: Security = Field(default_factory=Security)
-    database: Database = Field(default_factory=Database)
     log_level: str = "INFO"
-    sqlalchemy_database_uri: str = "sqlite+aiosqlite:///tasks.db"
+    sqlalchemy_database_uri: str = os.getenv("DATABASE_URL") or (
+        "sqlite+aiosqlite:///tasks.db"
+    )
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_DIR}/.env",
