@@ -12,6 +12,7 @@ class Task(Base):
     __tablename__ = "tasks"  # The name of the table in the database
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str] = mapped_column(String(65535), nullable=True)
     due_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
     update_time: Mapped[datetime] = mapped_column(

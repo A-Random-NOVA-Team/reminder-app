@@ -1,9 +1,11 @@
 import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from typing import List
+from sqlalchemy.ext.asyncio import AsyncSession
 from api import deps
-from schemas.requests import CreateTaskRequest
+from schemas.requests import CreateTaskRequest, UpdateTaskRequest
 from schemas.responses import TaskResponse
 from task import Task
 
@@ -11,7 +13,7 @@ router = APIRouter()
 
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
-def create_task(task: CreateTaskRequest, db: Session = Depends(deps.get_session)):
+async def create_task(task: CreateTaskRequest, session: AsyncSession = Depends(deps.get_session)):
     """Create a new task"""
     db_task = Task(
         name=task.name,
@@ -21,57 +23,57 @@ def create_task(task: CreateTaskRequest, db: Session = Depends(deps.get_session)
         created_at=datetime.datetime.now(datetime.timezone.utc),
         updated_at=datetime.datetime.now(datetime.timezone.utc),
     )
-    db.add(db_task)
-    db.commit()
-    db.refresh(db_task)
+    session.add(db_task)
+    await session.commit()
     return db_task
 
 
 @router.get("/", response_model=List[TaskResponse])
-def get_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(deps.get_session)):
+async def get_tasks(skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)):
     """Get all tasks"""
-    tasks = db.query(Task).offset(skip).limit(limit).all()
-    return tasks
+    tasks = await session.execute(select(Task).offset(skip).limit(limit))
+    return tasks.scalars().all()
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
-def get_task(task_id: int, db: Session = Depends(deps.get_session)):
+async def get_task(task_id: int, session: AsyncSession = Depends(deps.get_session)):
     """Get a specific task by ID"""
-    task = db.query(Task).filter(Task.id == task_id).first()
+    task = await session.execute(select(Task).filter(Task.id == task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
 
 @router.put("/{task_id}", response_model=TaskResponse)
-def update_task(
-    task_id: int, task: CreateTaskRequest, db: Session = Depends(deps.get_session)
+async def update_task(
+    task_id: int, task: UpdateTaskRequest, session: AsyncSession = Depends(deps.get_session)
 ):
     """Update a task"""
-    db_task = db.query(Task).filter(Task.id == task_id).first()
+    db_task = await session.get(Task, task_id)
     if not db_task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    db_task.name = task.name
-    # db_task.description = task.description
-    db_task.due_date = (
-        datetime.datetime.fromisoformat(task.due_date) if task.due_date else None
-    )
+    if task.name is not None:
+        db_task.name = task.name
+    if task.description is not None:
+        db_task.description = task.description
+    if task.due_date is not None:
+        db_task.due_date = datetime.datetime.fromisoformat(task.due_date)
+    if task.is_completed is not None:
+        db_task.is_completed = task.is_completed
     db_task.update_time = datetime.datetime.now(datetime.timezone.utc)
 
-    db.add(db_task)
-    db.commit()
-    db.refresh(db_task)
+    session.add(db_task)
+    await session.commit()
     return db_task
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id: int, db: Session = Depends(deps.get_session)):
+async def delete_task(task_id: int, session: AsyncSession = Depends(deps.get_session)):
     """Delete a task"""
-    db_task = db.query(Task).filter(Task.id == task_id).first()
+    db_task = await session.get(Task, task_id)
     if not db_task:
         raise HTTPException(status_code=404, detail="Task not found")
-
-    db.delete(db_task)
-    db.commit()
+    await session.delete(db_task)
+    await session.commit()
     return None
