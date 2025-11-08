@@ -1,0 +1,8 @@
+pyjwt
+asyncpg
+pydantic-settings
+fastapi
+sqlalchemy
+alembic
+pydantic
+bcrypt
