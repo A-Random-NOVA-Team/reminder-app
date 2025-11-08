@@ -47,18 +47,7 @@ class Settings(BaseSettings):
     security: Security = Field(default_factory=Security)
     database: Database = Field(default_factory=Database)
     log_level: str = "INFO"
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def sqlalchemy_database_uri(self) -> URL:
-        return URL.create(
-            drivername="postgresql+asyncpg",
-            username=self.database.username,
-            password=self.database.password.get_secret_value(),
-            host=self.database.hostname,
-            port=self.database.port,
-            database=self.database.db,
-        )
+    sqlalchemy_database_uri: str = "sqlite+aiosqlite:///tasks.db"
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_DIR}/.env",
