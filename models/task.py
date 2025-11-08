@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import create_engine, String, DateTime, Boolean, func
-from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
+from sqlalchemy.orm import Mapped, mapped_column, sessionmaker, relationship
 from .base import Base
 
 
@@ -17,6 +17,13 @@ class Task(Base):
     )
     update_time: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    difficulty_record = relationship(
+        "TaskDifficulty",
+        back_populates="task",
+        uselist=False, # Important for one-to-one
+        cascade="all, delete-orphan" # Optional: Deletes difficulty when task is deleted
     )
 
     def mark_complete(self):
