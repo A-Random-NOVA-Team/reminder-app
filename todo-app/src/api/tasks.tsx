@@ -3,7 +3,7 @@ import { Task, CreateTaskRequest, UpdateTaskRequest } from './types';
 const API_BASE_URL = 'http://localhost:8000'; // TODO!
 
 export async function getTasks(excludeCompleted: boolean = false): Promise<Task[]> {
-    const url = `${API_BASE_URL}/tasks?exclude_completed=${excludeCompleted}`;
+    const url = `${API_BASE_URL}/tasks/?exclude_completed=${excludeCompleted}`;
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error(`Failed to fetch tasks: ${response.statusText}`);
