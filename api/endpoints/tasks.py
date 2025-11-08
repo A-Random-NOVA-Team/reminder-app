@@ -29,8 +29,6 @@ async def run_estimate_task_difficulty(
     )
 
 def create_task_response(task: Task, task_difficulty: TaskDifficulty | None = None) -> TaskResponse:
-    if not task_difficulty and task.difficulty_record:
-        task_difficulty = task.difficulty_record
     return TaskResponse(
         id=str(task.id),
         name=task.name,
