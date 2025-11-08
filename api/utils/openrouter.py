@@ -30,7 +30,7 @@ class TaskDifficultySchema(BaseModel):
 
 
 async def estimate_task_difficulty_full(
-    task_name: str, task_description: str
+    task_name: str, task_description: str, task_deadline: str | None = None
 ) -> TaskDifficultySchema:
     """
     Calls OpenRouter non-streaming API to get a structured difficulty score (0-100)
@@ -63,6 +63,7 @@ async def estimate_task_difficulty_full(
     The task is:
     Name: "{task_name}"
     Description: "{task_description}"
+    Deadline: "{task_deadline if task_deadline else 'No deadline provided'}"
     """
 
     payload = {

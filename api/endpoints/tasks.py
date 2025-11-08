@@ -2,14 +2,14 @@ import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+from utils.openrouter import TaskDifficultySchema, estimate_task_difficulty_full
 
 from api import deps
 from models import Task, TaskDifficulty
 from schemas.requests import CreateTaskRequest, UpdateTaskRequest
 from schemas.responses import TaskResponse
-from ..utils.openrouter import estimate_task_difficulty_full
 
 router = APIRouter()
 
@@ -23,6 +23,11 @@ def parse_date_or_error(date_str: str) -> datetime.datetime:
             detail=f"Invalid date format: {date_str}. Expected ISO format.",
         )
 
+async def run_estimate_task_difficulty(
+    task: Task) -> TaskDifficultySchema:
+    return await estimate_task_difficulty_full(
+        task_name=task.name, task_description=task.description, task_deadline=f"{task.due_date - task.create_time}" if task.due_date else None
+    )
 
 def create_task_response(task: Task, task_difficulty: TaskDifficulty | None = None) -> TaskResponse:
     if not task_difficulty and task.difficulty_record:
@@ -56,9 +61,7 @@ async def create_task(
     )
     session.add(db_task)
     await session.commit()
-    task_difficulty = await estimate_task_difficulty_full(
-        task_name=db_task.name, task_description=db_task.description
-    )
+    task_difficulty = await run_estimate_task_difficulty(db_task)
     db_task.difficulty_record = TaskDifficulty(
         task_id=db_task.id,
         score=task_difficulty.difficulty_score,
@@ -110,9 +113,7 @@ async def update_task(
     db_task.update_time = datetime.datetime.now(datetime.UTC)
 
     if task.difficulty_reestimate:
-        task_difficulty = await estimate_task_difficulty_full(
-            task_name=db_task.name, task_description=db_task.description
-        )
+        task_difficulty = await run_estimate_task_difficulty(db_task)
         db_task.difficulty_record = TaskDifficulty(
             task_id=db_task.id,
             score=task_difficulty.difficulty_score,
