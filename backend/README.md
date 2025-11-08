@@ -229,10 +229,10 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api import deps
-from app.models import Pet, User
-from app.schemas.requests import PetCreateRequest
-from app.schemas.responses import PetResponse
+from api import deps
+from models import Pet, User
+from schemas.requests import PetCreateRequest
+from schemas.responses import PetResponse
 
 router = APIRouter()
 
@@ -281,7 +281,7 @@ Also, we need to add newly created endpoints to router.
 
 (...)
 
-from app.api.endpoints import auth, pets, users
+from api.endpoints import auth, pets, users
 
 (...)
 
@@ -302,8 +302,8 @@ from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.main import app
-from app.models import Pet, User
+from main import app
+from models import Pet, User
 
 
 async def test_create_new_pet(

@@ -1,6 +1,6 @@
 import bcrypt
 
-from app.core.config import get_settings
+from core.config import get_settings
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

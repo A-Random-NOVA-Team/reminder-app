@@ -4,9 +4,9 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security.password import verify_password
-from app.main import app
-from app.models import User
+from core.security.password import verify_password
+from main import app
+from models import User
 
 
 @pytest.mark.asyncio(loop_scope="session")

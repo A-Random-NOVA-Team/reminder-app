@@ -7,12 +7,12 @@ from httpx import AsyncClient
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api import api_messages
-from app.core.config import get_settings
-from app.core.security.jwt import verify_jwt_token
-from app.main import app
-from app.models import RefreshToken, User
-from app.tests.conftest import default_user_password
+from api import api_messages
+from core.config import get_settings
+from core.security.jwt import verify_jwt_token
+from main import app
+from models import RefreshToken, User
+from tests.conftest import default_user_password
 
 
 @pytest.mark.asyncio(loop_scope="session")

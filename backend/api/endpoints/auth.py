@@ -8,17 +8,17 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api import api_messages, deps
-from app.core.config import get_settings
-from app.core.security.jwt import create_jwt_token
-from app.core.security.password import (
+from api import api_messages, deps
+from core.config import get_settings
+from core.security.jwt import create_jwt_token
+from core.security.password import (
     DUMMY_PASSWORD,
     get_password_hash,
     verify_password,
 )
-from app.models import RefreshToken, User
-from app.schemas.requests import RefreshTokenRequest, UserCreateRequest
-from app.schemas.responses import AccessTokenResponse, UserResponse
+from models import RefreshToken, User
+from schemas.requests import RefreshTokenRequest, UserCreateRequest
+from schemas.responses import AccessTokenResponse, UserResponse
 
 router = APIRouter()
 

@@ -11,12 +11,12 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
 )
 
-from app.core import database_session
-from app.core.config import get_settings
-from app.core.security.jwt import create_jwt_token
-from app.core.security.password import get_password_hash
-from app.main import app as fastapi_app
-from app.models import Base, User
+from core import database_session
+from core.config import get_settings
+from core.security.jwt import create_jwt_token
+from core.security.password import get_password_hash
+from main import app as fastapi_app
+from models import Base, User
 
 default_user_id = "b75365d9-7bf9-4f54-add5-aeab333a087b"
 default_user_email = "geralt@wiedzmin.pl"

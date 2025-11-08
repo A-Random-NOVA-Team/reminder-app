@@ -2,8 +2,8 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from app.main import app
-from app.tests.conftest import (
+from main import app
+from tests.conftest import (
     default_user_email,
     default_user_id,
 )

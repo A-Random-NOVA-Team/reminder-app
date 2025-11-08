@@ -5,8 +5,8 @@ from fastapi import HTTPException
 from freezegun import freeze_time
 from pydantic import SecretStr
 
-from app.core.config import get_settings
-from app.core.security import jwt
+from core.config import get_settings
+from core.security import jwt
 
 
 def test_jwt_access_token_can_be_decoded_back_into_user_id() -> None:
