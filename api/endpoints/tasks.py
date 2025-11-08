@@ -74,10 +74,13 @@ async def create_task(
 
 @router.get("/", response_model=list[TaskResponse])
 async def get_tasks(
-    skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)
+    exclude_completed: bool = False, skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)
 ):
     """Get all tasks"""
-    tasks = await session.execute(select(Task).offset(skip).limit(limit).options(selectinload(Task.difficulty_record)))
+    query = select(Task).offset(skip).limit(limit).options(selectinload(Task.difficulty_record))
+    if exclude_completed:
+        query = query.filter(Task.is_completed == False)
+    tasks = await session.execute(query)
     return [create_task_response(task) for task in tasks.scalars().all()]
 
 
