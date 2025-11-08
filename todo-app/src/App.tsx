@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Reminder from './Reminder';
 
 function App() {
+
   return (
     <div className="App">
 
@@ -10,7 +11,12 @@ function App() {
     <div className="col-sm-4">placeholder</div>
     <div className="col-sm-8">
       <label>
-       <input name="reminder" />
+
+       <input onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          console.log((e.target as HTMLInputElement).value);
+                        }}
+                      } />
       </label>
     </div>
     </div>
