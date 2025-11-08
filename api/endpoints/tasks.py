@@ -28,7 +28,7 @@ async def run_estimate_task_difficulty(
         task_name=task.name, task_description=task.description, task_deadline=deadline_str
     )
 
-def create_task_response(task: Task, task_difficulty: TaskDifficulty | None = None) -> TaskResponse:
+def create_task_response(task: Task, task_difficulty: TaskDifficulty) -> TaskResponse:
     return TaskResponse(
         id=str(task.id),
         name=task.name,
@@ -79,11 +79,10 @@ async def get_tasks(
     if exclude_completed:
         query = query.filter(Task.is_completed == False)
     tasks = await session.execute(query)
-    result = []
-    for task in tasks.scalars().all():
-        difficulty_record = task.difficulty_record
-        result.append(create_task_response(task, difficulty_record))
-    return result
+    return [
+        create_task_response(task, task.difficulty_record)
+        for task in tasks.scalars().all()
+    ]
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
@@ -92,7 +91,8 @@ async def get_task(task_id: int, session: AsyncSession = Depends(deps.get_sessio
     task = await session.execute(select(Task).filter(Task.id == task_id).options(selectinload(Task.difficulty_record)))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return create_task_response(task.scalar_one())
+    chosen = task.scalar_one()
+    return create_task_response(chosen, chosen.difficulty_record)
 
 
 @router.put("/{task_id}", response_model=TaskResponse)
@@ -125,10 +125,11 @@ async def update_task(
             create_time=datetime.datetime.now(datetime.UTC),
         )
         session.add(db_task.difficulty_record)
+    task_difficulty = await session.execute(select(TaskDifficulty).filter(TaskDifficulty.task_id == task_id))
 
     session.add(db_task)
     await session.commit()
-    return create_task_response(db_task)
+    return create_task_response(db_task, task_difficulty.scalar_one())
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
