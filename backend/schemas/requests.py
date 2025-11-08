@@ -17,3 +17,30 @@ class UserUpdatePasswordRequest(BaseRequest):
 class UserCreateRequest(BaseRequest):
     email: EmailStr
     password: str
+
+
+class UserLoginRequest(BaseRequest):
+    email: EmailStr
+    password: str
+
+
+class UserLogoutRequest(BaseRequest):
+    refresh_token: str
+
+
+class CreateTaskRequest(BaseRequest):
+    name: str
+    description: str | None = None
+    due_date: str | None = None
+
+
+class UpdateTaskRequest(BaseRequest):
+    task_id: str
+    name: str | None = None
+    description: str | None = None
+    due_date: str | None = None
+    is_completed: bool | None = None
+
+
+class DeleteTaskRequest(BaseRequest):
+    task_id: str

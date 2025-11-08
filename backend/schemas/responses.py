@@ -16,3 +16,8 @@ class AccessTokenResponse(BaseResponse):
 class UserResponse(BaseResponse):
     user_id: str
     email: EmailStr
+
+
+class TaskResponse(BaseResponse):
+    task_id: str
+    status: str
