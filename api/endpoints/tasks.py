@@ -5,7 +5,7 @@ from typing import List
 from api import deps
 from schemas.requests import CreateTaskRequest
 from schemas.responses import TaskResponse
-from ....task import Task
+from task import Task
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
