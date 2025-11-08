@@ -6,9 +6,9 @@ export type Task = {
     due_date: string | null;
     is_completed: boolean;
 
-    diffulty_score: number | null;
+    difficulty_score: number | null;
     reasoning: string | null;
-    diffulty_estimation_time: string | null;
+    difficulty_estimation_time: string | null;
 
     create_time: string;
     update_time: string;

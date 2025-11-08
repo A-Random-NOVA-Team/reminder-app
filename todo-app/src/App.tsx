@@ -12,7 +12,7 @@ type TaskNormalized = {
     due_date: string | null;
     is_completed: boolean;
 
-    diffulty_score: number;
+    difficulty_score: number;
 };
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
           description: task.description || "",
           due_date: task.due_date,
           is_completed: task.is_completed,
-          diffulty_score: task.diffulty_score || 50,
+          difficulty_score: task.difficulty_score || 50,
         });
       }
       setTasks(normalizedTasks);
@@ -46,8 +46,8 @@ function App() {
   }, []);
 
   const handleCompleteReminder = (index: number) => {
-    const taskScore = tasks[index].diffulty_score;
-    updateTask(tasks[index].id, { is_completed: true, diffulty_reestimate: false }).then(() => {
+    const taskScore = tasks[index].difficulty_score;
+    updateTask(tasks[index].id, { is_completed: true, difficulty_reestimate: false }).then(() => {
       setCompletedScores(prev => prev + taskScore);
       fetchTasks();
     }).catch(error => {
@@ -63,7 +63,7 @@ function App() {
         <Reminder
           key={tasks[i].id}
           text={tasks[i].name}
-          difficultyScore={tasks[i].diffulty_score}
+          difficultyScore={tasks[i].difficulty_score}
           index={i}
           completeTaskCallback={handleCompleteReminder}
         />

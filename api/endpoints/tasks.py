@@ -35,9 +35,9 @@ def create_task_response(task: Task, task_difficulty: TaskDifficulty | None = No
         description=task.description,
         due_date=task.due_date.isoformat() if task.due_date else None,
         is_completed=task.is_completed,
-        diffulty_score=task_difficulty.score if task_difficulty else None,
+        difficulty_score=task_difficulty.score if task_difficulty else None,
         reasoning=task_difficulty.reasoning if task_difficulty else None,
-        diffulty_estimation_time=task_difficulty.create_time.isoformat() if task_difficulty else None,
+        difficulty_estimation_time=task_difficulty.create_time.isoformat() if task_difficulty else None,
         create_time=task.create_time.isoformat(),
         update_time=task.update_time.isoformat(),
     )
