@@ -35,7 +35,6 @@ class CreateTaskRequest(BaseRequest):
 
 
 class UpdateTaskRequest(BaseRequest):
-    task_id: str
     name: str | None = None
     description: str | None = None
     difficulty_reestimate: bool | None = None
