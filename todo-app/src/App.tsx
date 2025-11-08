@@ -12,6 +12,8 @@ function App() {
       <label>
        <input name="reminder" />
       </label>
+
+    <Reminder/>
     </div>
     </div>
 
