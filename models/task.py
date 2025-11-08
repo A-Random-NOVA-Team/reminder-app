@@ -1,6 +1,8 @@
 from datetime import datetime
-from sqlalchemy import create_engine, String, DateTime, Boolean, func
-from sqlalchemy.orm import Mapped, mapped_column, sessionmaker, relationship
+
+from sqlalchemy import Boolean, DateTime, String, create_engine, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship, sessionmaker
+
 from .base import Base
 
 

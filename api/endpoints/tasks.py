@@ -1,13 +1,13 @@
 import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from api import deps
+from models import Task
 from schemas.requests import CreateTaskRequest, UpdateTaskRequest
 from schemas.responses import TaskResponse
-from models import Task
 
 router = APIRouter()
 
@@ -44,15 +44,15 @@ async def create_task(
         description=task.description or "",
         due_date=parse_date_or_error(task.due_date) if task.due_date else None,
         is_completed=False,
-        create_time=datetime.datetime.now(datetime.timezone.utc),
-        update_time=datetime.datetime.now(datetime.timezone.utc),
+        create_time=datetime.datetime.now(datetime.UTC),
+        update_time=datetime.datetime.now(datetime.UTC),
     )
     session.add(db_task)
     await session.commit()
     return create_task_response(db_task)
 
 
-@router.get("/", response_model=List[TaskResponse])
+@router.get("/", response_model=list[TaskResponse])
 async def get_tasks(
     skip: int = 0, limit: int = 100, session: AsyncSession = Depends(deps.get_session)
 ):
@@ -89,7 +89,7 @@ async def update_task(
         db_task.due_date = parse_date_or_error(task.due_date)
     if task.is_completed is not None:
         db_task.is_completed = task.is_completed
-    db_task.update_time = datetime.datetime.now(datetime.timezone.utc)
+    db_task.update_time = datetime.datetime.now(datetime.UTC)
 
     session.add(db_task)
     await session.commit()
@@ -104,4 +104,3 @@ async def delete_task(task_id: int, session: AsyncSession = Depends(deps.get_ses
         raise HTTPException(status_code=404, detail="Task not found")
     await session.delete(db_task)
     await session.commit()
-    return None

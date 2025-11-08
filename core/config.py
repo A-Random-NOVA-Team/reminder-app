@@ -15,13 +15,12 @@
 
 
 import logging.config
-from functools import lru_cache
 import os
+from functools import lru_cache
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, BaseModel, Field, SecretStr, computed_field
+from pydantic import AnyHttpUrl, BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine.url import URL
 
 PROJECT_DIR = Path(__file__).parent.parent.parent
 

@@ -1,6 +1,7 @@
 import os
-from pydantic import BaseModel, Field
+
 import httpx
+from pydantic import BaseModel, Field
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 if not OPENROUTER_API_KEY:
@@ -70,7 +71,7 @@ async def estimate_task_difficulty_full(
             {"role": "system", "content": system_prompt},
             {
                 "role": "user",
-                "content": f"Analyze the task and determine its difficulty score (0-100) and provide reasoning.",
+                "content": "Analyze the task and determine its difficulty score (0-100) and provide reasoning.",
             },
         ],
         "response_format": {"type": "json_object"},

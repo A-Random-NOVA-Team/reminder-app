@@ -1,10 +1,10 @@
 import datetime
-from sqlalchemy import Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy.ext.declarative import declarative_base
 
-from .task import Task
+from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .base import Base
+from .task import Task
 
 
 class TaskDifficulty(Base):
@@ -25,7 +25,7 @@ class TaskDifficulty(Base):
 
     # Timestamp for when the score was generated/updated
     create_time: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now(datetime.timezone.utc)
+        DateTime, default=datetime.datetime.now(datetime.UTC)
     )
 
     # Relationship back to the Task
