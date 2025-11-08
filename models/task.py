@@ -12,6 +12,9 @@ class Task(Base):
     description: Mapped[str] = mapped_column(String(65535), nullable=True)
     due_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
     update_time: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )

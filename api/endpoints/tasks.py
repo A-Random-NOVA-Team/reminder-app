@@ -12,6 +12,26 @@ from models import Task
 router = APIRouter()
 
 
+def parse_date_or_error(date_str: str) -> datetime.datetime:
+    try:
+        return datetime.datetime.fromisoformat(date_str)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid date format: {date_str}. Expected ISO format.",
+        )
+
+def create_task_response(task: Task) -> TaskResponse:
+    return TaskResponse(
+        id=str(task.id),
+        name=task.name,
+        description=task.description,
+        due_date=task.due_date.isoformat() if task.due_date else None,
+        is_completed=task.is_completed,
+        create_time=task.create_time.isoformat(),
+        update_time=task.update_time.isoformat(),
+    )
+
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(
     task: CreateTaskRequest, session: AsyncSession = Depends(deps.get_session)
@@ -19,15 +39,15 @@ async def create_task(
     """Create a new task"""
     db_task = Task(
         name=task.name,
-        description=task.description,
-        due_date=task.due_date,
+        description=task.description or "",
+        due_date=parse_date_or_error(task.due_date) if task.due_date else None,
         is_completed=False,
-        created_at=datetime.datetime.now(datetime.timezone.utc),
-        updated_at=datetime.datetime.now(datetime.timezone.utc),
+        create_time=datetime.datetime.now(datetime.timezone.utc),
+        update_time=datetime.datetime.now(datetime.timezone.utc),
     )
     session.add(db_task)
     await session.commit()
-    return db_task
+    return create_task_response(db_task)
 
 
 @router.get("/", response_model=List[TaskResponse])
@@ -36,7 +56,7 @@ async def get_tasks(
 ):
     """Get all tasks"""
     tasks = await session.execute(select(Task).offset(skip).limit(limit))
-    return tasks.scalars().all()
+    return [create_task_response(task) for task in tasks.scalars().all()]
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
@@ -45,7 +65,7 @@ async def get_task(task_id: int, session: AsyncSession = Depends(deps.get_sessio
     task = await session.execute(select(Task).filter(Task.id == task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return task
+    return create_task_response(task)
 
 
 @router.put("/{task_id}", response_model=TaskResponse)
@@ -64,14 +84,14 @@ async def update_task(
     if task.description is not None:
         db_task.description = task.description
     if task.due_date is not None:
-        db_task.due_date = datetime.datetime.fromisoformat(task.due_date)
+        db_task.due_date = parse_date_or_error(task.due_date)
     if task.is_completed is not None:
         db_task.is_completed = task.is_completed
     db_task.update_time = datetime.datetime.now(datetime.timezone.utc)
 
     session.add(db_task)
     await session.commit()
-    return db_task
+    return create_task_response(db_task)
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)

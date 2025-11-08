@@ -19,5 +19,10 @@ class UserResponse(BaseResponse):
 
 
 class TaskResponse(BaseResponse):
-    task_id: str
-    status: str
+    id: str
+    name: str
+    description: str | None
+    due_date: str | None
+    is_completed: bool
+    create_time: str
+    update_time: str
