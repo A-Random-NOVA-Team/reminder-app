@@ -22,8 +22,8 @@ class Task(Base):
     difficulty_record = relationship(
         "TaskDifficulty",
         back_populates="task",
-        uselist=False, # Important for one-to-one
-        cascade="all, delete-orphan" # Optional: Deletes difficulty when task is deleted
+        uselist=False,  # Important for one-to-one
+        cascade="all, delete-orphan",  # Optional: Deletes difficulty when task is deleted
     )
 
     def mark_complete(self):

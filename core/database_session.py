@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import (
 from core.config import get_settings
 
 
-def new_async_engine(uri: URL) -> AsyncEngine:
+def new_async_engine(uri: URL | str) -> AsyncEngine:
     return create_async_engine(
         uri,
         pool_pre_ping=True,
