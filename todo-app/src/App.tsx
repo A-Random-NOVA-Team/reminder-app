@@ -40,6 +40,7 @@ function App() {
         <Reminder
           key={tasks[i].id}
           text={tasks[i].name}
+          difficultyScore={tasks[i].diffulty_score || 50}
           index={i}
           completeTaskCallback={handleCompleteReminder}
         />
