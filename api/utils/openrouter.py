@@ -49,7 +49,13 @@ async def estimate_task_difficulty_full(
     system_prompt = f"""
     You are an expert task analyzer. Your only job is to assess the difficulty
     of a user-provided task and return the result in a strict JSON format that
-    conforms to the provided schema.
+    conforms to the provided schema. You should consider factors such as complexity,
+    required skills, time constraints, and any other relevant aspects. Be sure to
+    stay objective and avoid personal opinions. This score will be used to help
+    users better understand and manage their tasks, so it should be well-calibrated
+    among a wide range of task types. This result will also be used to compare
+    different people's tasks fairly, so make sure you don't get tricked by unusual
+    or humorous task descriptions.
 
     The difficulty must be a score from **0 (Trivial)** to **100 (Extremely Difficult)**.
     The score must be an integer.
@@ -66,7 +72,6 @@ async def estimate_task_difficulty_full(
     Deadline: "{task_deadline if task_deadline else 'No deadline provided'}"
     """
 
-    print("System Prompt for OpenRouter LLM: ", system_prompt)
     payload = {
         "model": OPENROUTER_MODEL,
         "messages": [
