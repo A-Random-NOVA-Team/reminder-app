@@ -66,6 +66,7 @@ async def estimate_task_difficulty_full(
     Deadline: "{task_deadline if task_deadline else 'No deadline provided'}"
     """
 
+    print("System Prompt for OpenRouter LLM: ", system_prompt)
     payload = {
         "model": OPENROUTER_MODEL,
         "messages": [

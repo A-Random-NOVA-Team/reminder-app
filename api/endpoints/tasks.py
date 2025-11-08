@@ -4,29 +4,28 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from utils.openrouter import TaskDifficultySchema, estimate_task_difficulty_full
 
 from api import deps
 from models import Task, TaskDifficulty
 from schemas.requests import CreateTaskRequest, UpdateTaskRequest
 from schemas.responses import TaskResponse
 
+from ..utils.datetime import add_timezone_to_datetime, parse_date_or_error
+from ..utils.openrouter import TaskDifficultySchema, estimate_task_difficulty_full
+
 router = APIRouter()
 
 
-def parse_date_or_error(date_str: str) -> datetime.datetime:
-    try:
-        return datetime.datetime.fromisoformat(date_str)
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid date format: {date_str}. Expected ISO format.",
-        )
-
 async def run_estimate_task_difficulty(
     task: Task) -> TaskDifficultySchema:
+    if task.due_date is not None:
+        due_date = add_timezone_to_datetime(task.due_date)
+        created = add_timezone_to_datetime(task.create_time)
+        deadline_str = f"{due_date - created}"
+    else:
+        deadline_str = None
     return await estimate_task_difficulty_full(
-        task_name=task.name, task_description=task.description, task_deadline=f"{task.due_date - task.create_time}" if task.due_date else None
+        task_name=task.name, task_description=task.description, task_deadline=deadline_str
     )
 
 def create_task_response(task: Task, task_difficulty: TaskDifficulty | None = None) -> TaskResponse:
