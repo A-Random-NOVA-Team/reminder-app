@@ -24,7 +24,7 @@ function App() {
 
   const handleCompleteReminder = (index: number) => {
     const taskScore = tasks[index].diffulty_score || 50;
-    deleteTask(tasks[index].id).then(() => {
+    updateTask(tasks[index].id, { is_completed: true, difficulty_reestimate: false }).then(() => {
       setCompletedScores(prev => prev + taskScore);
       fetchTasks();
     }).catch(error => {
