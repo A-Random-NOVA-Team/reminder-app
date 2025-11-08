@@ -41,7 +41,7 @@ function App() {
           key={tasks[i].id}
           text={tasks[i].name}
           index={i}
-          del={handleCompleteReminder}
+          completeTaskCallback={handleCompleteReminder}
         />
       );
     }
